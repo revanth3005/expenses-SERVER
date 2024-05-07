@@ -16,7 +16,7 @@ app.use(express.json({ limit: "5mb" }));
 app.use(express.urlencoded({ extended: true }));
 
 //routes
-const route = require("./routes/index");
+const route = require("./routes/route");
 route(app);
 
 //error middleware
@@ -30,6 +30,7 @@ app.use((error, req, res, next) => {
     error: {
       status: error.status,
       message: error.message,
+      custom:'custom test'
     },
   });
 });
