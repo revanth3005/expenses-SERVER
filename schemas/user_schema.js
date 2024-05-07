@@ -18,7 +18,7 @@ const newSchema = new mongoose.Schema(
     // verified:{type:Boolean,default:false},
     // isVerifiedAt:{type:Date,default:null},
     // isDeletedAt:{type:Boolean,default:false},
-    user_id: { type: Number, required: true, unique:true },
+    user_id: { type: Number, unique: true },
     userData: [
       {
         month: { type: String },

@@ -1,4 +1,5 @@
 const user_schema = require("../schemas/user_schema");
+const count_schema = require("../schemas/countSchema");
 const {
   isValidString,
   isValid,
@@ -49,16 +50,21 @@ exports.createUser = async (req, res) => {
     response.error = error;
     return res.status(500).json(response);
   }
-
+  const getCount = await count_schema.find();
   const user_details = {
     name: data.name.trim(),
     email: data.email.trim(),
     password: data.password,
-    user_id: data.user_id,
+    user_id: getCount[0]?.present_user_id,
   };
   try {
     const userCreated = new user_schema(user_details);
     await userCreated.save();
+    // updating the count in usercount collection
+    const getCount = await count_schema.find();
+    console.log(getCount[0]);
+    getCount[0].present_user_id += 1;
+    await getCount[0].save();
     return res.status(200).json({
       success: true,
       code: 200,
