@@ -6,7 +6,7 @@ const newSchema = new mongoose.Schema(
     category: { type: String },
     title: { type: String },
     date: { type: Date },
-    amount: { type: parseFloat(Number) },
+    amount: { type: Number },
     month: { type: String },
     year: { type: Number },
   },

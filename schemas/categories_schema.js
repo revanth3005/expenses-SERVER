@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 
 const newSchema = new mongoose.Schema(
   {
-    category: [],
+    category:  { type: String }
   },
   { timestamps: true }
 );
