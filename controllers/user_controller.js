@@ -1,5 +1,6 @@
 const user_schema = require("../schemas/user_schema");
 const count_schema = require("../schemas/countSchema");
+const categories_schema = require("../schemas/categories_schema");
 const {
   isValidString,
   isValid,
@@ -64,13 +65,13 @@ exports.createUser = async (req, res) => {
     const getCount = await count_schema.find();
     console.log(getCount[0]);
     getCount[0].present_user_id += 1;
-    await getCount[0].save();
+    await getCount[0].save(); //updating user count
     return res.status(200).json({
       success: true,
       code: 200,
       data: userCreated,
       error: null,
-      message: "User Created Succesfully",
+      message: "User Created Successfully",
       resource: req.originalUrl,
     });
   } catch (error) {
@@ -84,4 +85,55 @@ exports.createUser = async (req, res) => {
       resource: req.originalUrl,
     });
   }
+};
+
+exports.getUserDetails = async (req, res) => {
+  const user_id = req.params.id;
+  const user = await user_schema.findOne({ user_id });
+  return res.status(200).json({
+    message: "fetched",
+    success: true,
+    code: 200,
+    data: user,
+    error: null,
+    resource: req.originalUrl,
+  });
+};
+
+exports.addUserItems = async (req, res) => {
+  const data = req.body;
+};
+
+/**
+ * adding new category
+ */
+exports.newCategory = async (req, res) => {
+  const data = req.body;
+  const response = {
+    success: false,
+    code: 400,
+    data: null,
+    message: "error",
+    error: "error",
+    resource: req.originalUrl,
+  };
+  if (!isValid(data) || !isValidObject(data)) {
+    response.message = "Invalid of sending data Provide required details";
+    return res.status(400).json(response);
+  }
+  if (!isValid(data.category) || !isValidString(data.category)) {
+    response.message = "Invalid provide the category";
+    return res.status(400).json(response);
+  }
+  const instance = new categories_schema();
+  instance.category.push(data.category);
+  await instance.save();
+  return res.status(200).json({
+    success: true,
+    code: 200,
+    data: instance.category,
+    error: null,
+    message: "Category Created Successfully",
+    resource: req.originalUrl,
+  });
 };
