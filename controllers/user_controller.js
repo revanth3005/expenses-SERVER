@@ -17,7 +17,7 @@ const {
  * @returns
  * creates new user
  */
-exports.createUser = async (req, res) => {
+exports.register = async (req, res) => {
   const data = req.body;
 
   const response = {
@@ -187,20 +187,45 @@ exports.newCategory = async (req, res) => {
     return res.status(400).json(response);
   }
 
-  const newCategory = {
-    category: data.category,
-  };
-  const instance = new categories_schema(newCategory);
-  await instance.save();
-  console.log(instance);
-  return res.status(200).json({
-    success: true,
-    code: 200,
-    data: instance,
-    error: null,
-    message: "Category Created Successfully",
-    resource: req.originalUrl,
-  });
+  try {
+    const category = await categories_schema.find({ category: data.category });
+    console.log(category);
+    if (category.length === 1) {
+      return res.status(400).json({
+        success: false,
+        code: 400,
+        data: null,
+        error: "Already there",
+        message: "Category there",
+        resource: req.originalUrl,
+      });
+    }
+
+    const newCategory = {
+      category: data.category,
+    };
+    const instance = new categories_schema(newCategory);
+    // instance.cat.push(newCategory)
+    await instance.save();
+    console.log(instance);
+    return res.status(200).json({
+      success: true,
+      code: 200,
+      data: instance,
+      error: null,
+      message: "Category Created Successfully",
+      resource: req.originalUrl,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      code: 500,
+      data: null,
+      error: error,
+      message: error.message,
+      resource: req.originalUrl,
+    });
+  }
 };
 
 /**
@@ -223,10 +248,10 @@ exports.getCategories = async (req, res) => {
 };
 
 /**
- * 
- * @param {*} req 
- * @param {*} res 
- * @returns 
+ *
+ * @param {*} req
+ * @param {*} res
+ * @returns
  * login api
  */
 exports.login = async (req, res) => {
@@ -256,8 +281,8 @@ exports.login = async (req, res) => {
   //checking for mail
   try {
     const emailExist = await user_schema.findOne({ email: data.email });
-    if (!emailExist) {
-      response.message = "please enter registered email";
+    if (!emailExist || emailExist.password !== data.password) {
+      response.message = "please enter registered email & password";
       return res.status(400).json(response);
     }
   } catch (error) {

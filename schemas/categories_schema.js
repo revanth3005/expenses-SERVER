@@ -2,7 +2,8 @@ const mongoose = require("mongoose");
 
 const newSchema = new mongoose.Schema(
   {
-    category:  { type: String }
+    category: { type: String },
+    cat: { type: Array },
   },
   { timestamps: true }
 );
