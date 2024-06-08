@@ -19,4 +19,5 @@ module.exports = (app) => {
   app.route("/api/v1/get_items/:id").get(user_controller.getUserItems);
   app.route("/api/v1/get_categories").get(user_controller.getCategories);
   app.route("/api/v1/login").post(user_controller.login);
+  app.route('/api/v1/update_category').post(user_controller.updateCategory)
 };

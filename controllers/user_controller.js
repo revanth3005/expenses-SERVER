@@ -304,3 +304,36 @@ exports.login = async (req, res) => {
     });
   }
 };
+
+exports.updateCategory = async (req, res) => {
+  const id = req.body.id;
+  const itemBody = req.body.itemBody;
+  console.log(req.body);
+  
+  try {
+    const data = await userItem_schema.findOne({ _id: id });
+    data.category = itemBody.category;
+    data.title = itemBody.title;
+    data.amount = itemBody.amount;
+    await data.save();
+
+    return res.status(200).json({
+      success: true,
+      code: 200,
+      data: data,
+      message: "updated",
+      error: "null",
+      resource: req.originalUrl,
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json( {
+      success: false,
+      code: 500,
+      data: null,
+      message: "update failed",
+      error: "error",
+      resource: req.originalUrl,
+    })
+  }
+};
